@@ -1,3 +1,9 @@
+/**
+ * A seamless CSV processing script: 
+ * Dealing with encoding complexities so you don't have to.
+ * * Supports: Shift-JIS, UTF-8, and UTF-8 with BOM.
+ */
+
 function onOpen() {
   const ui = SpreadsheetApp.getUi();
   ui.createMenu("🛠️ CSV操作")
