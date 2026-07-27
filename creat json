@@ -1,0 +1,35 @@
+function onOpen() {
+  // スプレッドシートのメニューにカスタムメニューを追加
+  const ui = SpreadsheetApp.getUi();
+  ui.createMenu('★データ出力')
+    .addItem('JSONを出力', 'exportToJson')
+    .addToUi();
+}
+
+function exportToJson() {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  const data = sheet.getDataRange().getValues();
+  
+  const headers = data[0]; // 1行目をヘッダー（キー名）とする
+  const jsonArray = [];
+
+  for (let i = 1; i < data.length; i++) {
+    const row = data[i];
+    if (!row[0]) continue; // idが空の行はスキップ
+    
+    const obj = {};
+    for (let j = 0; j < headers.length; j++) {
+      obj[headers[j]] = row[j];
+    }
+    jsonArray.push(obj);
+  }
+
+  const jsonString = JSON.stringify(jsonArray, null, 2);
+  
+  // ダイアログを表示して表示・コピーできるようにする
+  const html = HtmlService.createHtmlOutput(
+    `<textarea style="width:100%; height:300px;">${jsonString}</textarea>`
+  ).setWidth(600).setHeight(350);
+  
+  SpreadsheetApp.getUi().showModalDialog(html, '生成されたJSON（コピーして保存してください）');
+}
